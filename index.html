@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VB Cosméticos — Sistema de Vendas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,343 +16,319 @@
        SIDEBAR
   ═══════════════════════════════ -->
   <aside class="sidebar" id="sidebar">
-
-    <div class="logo-wrap">
-      <div class="logo-vb">VB</div>
-      <div class="logo-sub">Cosméticos</div>
+    <div class="sidebar-logo">
+      <img src="assets/logo-vb.svg" class="logo-mark" alt="VB Cosméticos" draggable="false">
+      <div class="logo-text">
+        <strong>VB Cosméticos</strong>
+        <span>Perfumaria &amp; Beleza</span>
+      </div>
     </div>
 
     <nav class="nav">
-      <div class="nav-label">Menu</div>
-
+      <div class="nav-section">Principal</div>
       <a class="nav-item active" data-page="dashboard">
-        <i class="ti ti-layout-dashboard"></i>
-        Dashboard
+        <i data-lucide="layout-grid"></i><span class="nav-label">Dashboard</span>
       </a>
+      <a class="nav-item" data-page="pdv">
+        <i data-lucide="shopping-cart"></i><span class="nav-label">PDV / Nova venda</span>
+      </a>
+
+      <div class="nav-section">Cadastros</div>
       <a class="nav-item" data-page="produtos">
-        <i class="ti ti-bottle"></i>
-        Produtos
+        <i data-lucide="package"></i><span class="nav-label">Produtos</span>
       </a>
       <a class="nav-item" data-page="clientes">
-        <i class="ti ti-users"></i>
-        Clientes
-      </a>
-      <a class="nav-item" data-page="vendas">
-        <i class="ti ti-shopping-cart"></i>
-        Vendas
-        <span class="nav-badge" id="badge-vendas">3</span>
-      </a>
-      <a class="nav-item" data-page="estoque">
-        <i class="ti ti-package"></i>
-        Estoque
+        <i data-lucide="users"></i><span class="nav-label">Clientes</span>
       </a>
 
-      <div class="nav-label" style="margin-top:24px;">Gestão</div>
+      <div class="nav-section">Estoque</div>
+      <a class="nav-item" data-page="entradas">
+        <i data-lucide="download"></i><span class="nav-label">Entrada de produtos</span>
+      </a>
+      <a class="nav-item" data-page="validade">
+        <i data-lucide="clock"></i><span class="nav-label">Controle de validade</span>
+        <span class="nav-badge" id="badgeValidade">5</span>
+      </a>
 
-      <a class="nav-item" data-page="relatorios">
-        <i class="ti ti-chart-bar"></i>
-        Relatórios
+      <div class="nav-section">Fiscal</div>
+      <a class="nav-item" data-page="notas">
+        <i data-lucide="file-text"></i><span class="nav-label">Notas (NFC-e)</span>
       </a>
-      <a class="nav-item" data-page="fiscal">
-        <i class="ti ti-receipt-2"></i>
-        Fiscal / NF
-      </a>
+
+      <div class="nav-divider"></div>
       <a class="nav-item" data-page="configuracoes">
-        <i class="ti ti-settings"></i>
-        Configurações
+        <i data-lucide="settings-2"></i><span class="nav-label">Configurações</span>
       </a>
     </nav>
 
     <div class="sidebar-footer">
-      <div class="user-mini">
+      <div class="user-card">
         <div class="user-avatar">PV</div>
         <div class="user-info">
-          <p>Priscilla Venturin</p>
-          <span>Administradora</span>
+          <strong>Priscilla Venturin</strong>
+          <span>Proprietária</span>
         </div>
       </div>
     </div>
-
   </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <!-- ═══════════════════════════════
        MAIN
   ═══════════════════════════════ -->
   <main class="main">
-
-    <!-- TOPBAR -->
     <header class="topbar">
-      <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-        <i class="ti ti-menu-2"></i>
-      </button>
-
-      <div class="search-wrap">
-        <i class="ti ti-search"></i>
-        <input type="text" id="searchInput" placeholder="Buscar produtos, clientes, vendas...">
-        <div class="search-results" id="searchResults"></div>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menu"><i data-lucide="menu"></i></button>
+      <div class="breadcrumb">
+        <span class="breadcrumb-section" id="crumbSection">VB Cosméticos</span>
+        <span class="breadcrumb-page" id="crumbPage">Dashboard</span>
       </div>
 
-      <div class="topbar-actions">
-        <div class="icon-btn notif-trigger" id="notifBtn" aria-label="Notificações">
-          <i class="ti ti-bell"></i>
-          <span class="notif-dot" id="notifDot"></span>
+      <div class="topbar-right">
+        <div class="search-wrap">
+          <i data-lucide="search"></i>
+          <input type="text" id="searchInput" placeholder="Buscar produto, cliente ou venda..." autocomplete="off">
+          <div class="search-results" id="searchResults"></div>
         </div>
 
-        <div class="topbar-avatar" id="userMenuBtn">PV</div>
+        <button class="icon-btn" id="notifBtn" aria-label="Notificações">
+          <i data-lucide="bell"></i>
+          <span class="notif-dot" id="notifDot"></span>
+        </button>
+
+        <button class="btn btn-primary btn-pill" id="novaVendaBtn">
+          <i data-lucide="plus"></i> Nova venda
+        </button>
       </div>
     </header>
 
-    <!-- NOTIFICATION PANEL -->
+    <!-- Painel de notificações -->
     <div class="notif-panel" id="notifPanel">
       <div class="notif-header">
-        Notificações
-        <span class="notif-clear" id="clearNotifs">Limpar</span>
+        <strong>Notificações</strong>
+        <button class="link-btn" id="clearNotifsBtn">Limpar</button>
       </div>
       <div class="notif-list" id="notifList"></div>
     </div>
 
-    <!-- CONTENT -->
-    <div class="content" id="mainContent">
-      <!-- Páginas injetadas via JS -->
+    <div class="content" id="pageContent"><!-- páginas injetadas via JS --></div>
+  </main>
+
+  <!-- ═══════════════════════════════
+       ASSISTENTE IA — FAB + DRAWER
+  ═══════════════════════════════ -->
+  <button class="ai-fab" id="aiFab" aria-label="Abrir assistente IA">
+    <i data-lucide="sparkles"></i>
+  </button>
+
+  <aside class="ai-drawer" id="aiDrawer">
+    <div class="ai-drawer-header">
+      <div class="ai-drawer-title">
+        <div class="ai-orb"><i data-lucide="sparkles"></i></div>
+        <div>
+          <strong>Assistente VB</strong>
+          <span>Pergunte em linguagem natural · beta</span>
+        </div>
+      </div>
+      <button class="icon-btn" id="aiCloseBtn" aria-label="Fechar assistente"><i data-lucide="x"></i></button>
     </div>
 
-  </main>
+    <div class="ai-messages" id="aiMessages"></div>
+
+    <div class="ai-chips" id="aiChips"></div>
+
+    <form class="ai-inputbar" id="aiForm" autocomplete="off">
+      <input type="text" id="aiInput" placeholder="Ex.: clientes que não compram há 90 dias…">
+      <button type="submit" class="ai-send" aria-label="Enviar"><i data-lucide="arrow-up"></i></button>
+    </form>
+  </aside>
+  <div class="ai-overlay" id="aiOverlay"></div>
 
   <!-- ═══════════════════════════════
        MODAIS
   ═══════════════════════════════ -->
 
-  <!-- NOVA VENDA -->
-  <div class="form-overlay" id="novaVendaModal">
-    <div class="form-modal">
-      <div class="form-close" data-close="novaVendaModal"><i class="ti ti-x"></i></div>
-      <h3><i class="ti ti-shopping-cart"></i> Nova Venda</h3>
-      <form id="formVenda" novalidate>
-        <div class="form-group">
-          <label class="form-label">Cliente *</label>
-          <select class="form-input" id="vendaCliente" required>
-            <option value="">Selecione um cliente</option>
-          </select>
-          <span class="form-error">Selecione um cliente</span>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Produto *</label>
-          <select class="form-input" id="vendaProduto" required>
-            <option value="">Selecione um produto</option>
-          </select>
-          <span class="form-error">Selecione um produto</span>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Quantidade *</label>
-            <input type="number" class="form-input" id="vendaQtd" value="1" min="1" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Desconto (%)</label>
-            <input type="number" class="form-input" id="vendaDesconto" value="0" min="0" max="100">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Forma de Pagamento</label>
-          <select class="form-input" id="vendaPagamento">
-            <option>PIX</option>
-            <option>Cartão de Crédito</option>
-            <option>Cartão de Débito</option>
-            <option>Dinheiro</option>
-          </select>
-        </div>
-        <div class="form-total" id="vendaTotal">
-          Total: <strong>R$ 0,00</strong>
-        </div>
-        <button type="submit" class="btn-primary full">
-          <i class="ti ti-check"></i> Registrar Venda
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- NOVO PRODUTO -->
-  <div class="form-overlay" id="produtoModal">
-    <div class="form-modal">
-      <div class="form-close" data-close="produtoModal"><i class="ti ti-x"></i></div>
-      <h3><i class="ti ti-bottle"></i> Cadastrar Produto</h3>
+  <!-- NOVO / EDITAR PRODUTO -->
+  <div class="modal-overlay" id="produtoModal">
+    <div class="modal">
+      <button class="modal-close" data-close="produtoModal" aria-label="Fechar"><i data-lucide="x"></i></button>
+      <h3 id="produtoModalTitle"><i data-lucide="package"></i> Cadastrar produto</h3>
       <form id="formProduto" novalidate>
-        <div class="form-group">
-          <label class="form-label">Nome do Produto *</label>
-          <input type="text" class="form-input" id="prodNome" placeholder="Ex: Bleu de Chanel EDP 100ml" required>
-          <span class="form-error">Informe o nome do produto</span>
+        <div class="field">
+          <label>Nome do produto <em>*</em></label>
+          <input type="text" id="prodNome" placeholder="Ex.: Perfume Fem. Blossom 100ml" required>
+          <span class="field-error">Informe o nome do produto</span>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Categoria *</label>
-            <select class="form-input" id="prodCategoria" required>
+        <div class="field-row">
+          <div class="field">
+            <label>Categoria <em>*</em></label>
+            <select id="prodCategoria" required>
               <option value="">Selecione</option>
-              <option>Perfumes</option>
+              <option>Perfumaria</option>
               <option>Maquiagem</option>
-              <option>Cuidados</option>
+              <option>Skincare</option>
+              <option>Cabelos &amp; outros</option>
             </select>
+            <span class="field-error">Selecione a categoria</span>
           </div>
-          <div class="form-group">
-            <label class="form-label">Preço (R$) *</label>
-            <input type="number" class="form-input" id="prodPreco" placeholder="0.00" min="0" step="0.01" required>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Qtd. Inicial *</label>
-            <input type="number" class="form-input" id="prodQtd" placeholder="0" min="0" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Data de Validade *</label>
-            <input type="date" class="form-input" id="prodValidade" required>
+          <div class="field">
+            <label>Preço de venda (R$) <em>*</em></label>
+            <input type="number" id="prodPreco" placeholder="0,00" min="0.01" step="0.01" required>
+            <span class="field-error">Informe o preço</span>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Fornecedor</label>
-          <input type="text" class="form-input" id="prodFornecedor" placeholder="Nome do fornecedor">
+        <div class="field-row">
+          <div class="field">
+            <label>Estoque inicial <em>*</em></label>
+            <input type="number" id="prodEstoque" placeholder="0" min="0" required>
+            <span class="field-error">Informe a quantidade</span>
+          </div>
+          <div class="field">
+            <label>Estoque mínimo</label>
+            <input type="number" id="prodEstoqueMin" placeholder="5" min="0">
+          </div>
         </div>
-        <button type="submit" class="btn-primary full">
-          <i class="ti ti-plus"></i> Cadastrar Produto
+        <div class="field-row">
+          <div class="field">
+            <label>Lote</label>
+            <input type="text" id="prodLote" placeholder="Ex.: L2606">
+          </div>
+          <div class="field">
+            <label>Validade <em>*</em></label>
+            <input type="date" id="prodValidade" required>
+            <span class="field-error">Informe a validade</span>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-rounded btn-block" id="produtoModalSubmit">
+          <i data-lucide="plus"></i> Cadastrar produto
         </button>
       </form>
     </div>
   </div>
 
   <!-- NOVO CLIENTE -->
-  <div class="form-overlay" id="clienteModal">
-    <div class="form-modal">
-      <div class="form-close" data-close="clienteModal"><i class="ti ti-x"></i></div>
-      <h3><i class="ti ti-user-plus"></i> Novo Cliente</h3>
+  <div class="modal-overlay" id="clienteModal">
+    <div class="modal">
+      <button class="modal-close" data-close="clienteModal" aria-label="Fechar"><i data-lucide="x"></i></button>
+      <h3><i data-lucide="user-plus"></i> Novo cliente</h3>
       <form id="formCliente" novalidate>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Nome *</label>
-            <input type="text" class="form-input" id="cliNome" placeholder="Nome completo" required>
-            <span class="form-error">Informe o nome</span>
+        <div class="field">
+          <label>Nome completo <em>*</em></label>
+          <input type="text" id="cliNome" placeholder="Nome do cliente" required>
+          <span class="field-error">Informe o nome</span>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Telefone / WhatsApp <em>*</em></label>
+            <input type="tel" id="cliTel" placeholder="(27) 99000-0000" required>
+            <span class="field-error">Informe o telefone</span>
           </div>
-          <div class="form-group">
-            <label class="form-label">CPF</label>
-            <input type="text" class="form-input" id="cliCpf" placeholder="000.000.000-00" maxlength="14">
+          <div class="field">
+            <label>CPF</label>
+            <input type="text" id="cliCpf" placeholder="000.000.000-00" maxlength="14">
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Telefone / WhatsApp *</label>
-          <input type="tel" class="form-input" id="cliTel" placeholder="(27) 99000-0000" required>
-          <span class="form-error">Informe o telefone</span>
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" id="cliEmail" placeholder="cliente@email.com">
         </div>
-        <div class="form-group">
-          <label class="form-label">E-mail</label>
-          <input type="email" class="form-input" id="cliEmail" placeholder="cliente@email.com">
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Cidade</label>
-            <input type="text" class="form-input" id="cliCidade" placeholder="Vila Velha">
+        <div class="field-row">
+          <div class="field">
+            <label>Data de nascimento</label>
+            <input type="date" id="cliNascimento">
           </div>
-          <div class="form-group">
-            <label class="form-label">Estado</label>
-            <select class="form-input" id="cliEstado">
-              <option>ES</option><option>SP</option><option>RJ</option>
-              <option>MG</option><option>BA</option><option>PR</option>
+          <div class="field">
+            <label>Cidade</label>
+            <select id="cliCidade">
+              <option>Vila Velha</option>
+              <option>Vitória</option>
+              <option>Serra</option>
+              <option>Cariacica</option>
+              <option>Guarapari</option>
             </select>
           </div>
         </div>
-        <button type="submit" class="btn-primary full">
-          <i class="ti ti-user-plus"></i> Cadastrar Cliente
+        <button type="submit" class="btn btn-primary btn-rounded btn-block">
+          <i data-lucide="user-plus"></i> Cadastrar cliente
         </button>
       </form>
     </div>
   </div>
 
-  <!-- ENTRADA DE PRODUTO -->
-  <div class="form-overlay" id="entradaModal">
-    <div class="form-modal">
-      <div class="form-close" data-close="entradaModal"><i class="ti ti-x"></i></div>
-      <h3><i class="ti ti-truck-delivery"></i> Entrada de Produto</h3>
+  <!-- ENTRADA DE PRODUTOS -->
+  <div class="modal-overlay" id="entradaModal">
+    <div class="modal">
+      <button class="modal-close" data-close="entradaModal" aria-label="Fechar"><i data-lucide="x"></i></button>
+      <h3><i data-lucide="download"></i> Registrar entrada</h3>
       <form id="formEntrada" novalidate>
-        <div class="form-group">
-          <label class="form-label">Produto *</label>
-          <select class="form-input" id="entProduto" required>
+        <div class="field">
+          <label>Produto <em>*</em></label>
+          <select id="entProduto" required>
             <option value="">Selecione o produto</option>
           </select>
+          <span class="field-error">Selecione o produto</span>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Qtd. Recebida *</label>
-            <input type="number" class="form-input" id="entQtd" placeholder="0" min="1" required>
+        <div class="field-row">
+          <div class="field">
+            <label>Quantidade recebida <em>*</em></label>
+            <input type="number" id="entQtd" placeholder="0" min="1" required>
+            <span class="field-error">Informe a quantidade</span>
           </div>
-          <div class="form-group">
-            <label class="form-label">Nova Validade *</label>
-            <input type="date" class="form-input" id="entValidade" required>
+          <div class="field">
+            <label>Custo unitário (R$)</label>
+            <input type="number" id="entCusto" placeholder="0,00" min="0" step="0.01">
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Custo Unitário (R$)</label>
-          <input type="number" class="form-input" id="entCusto" placeholder="0.00" step="0.01">
+        <div class="field-row">
+          <div class="field">
+            <label>Lote</label>
+            <input type="text" id="entLote" placeholder="Ex.: L2606">
+          </div>
+          <div class="field">
+            <label>Validade do lote <em>*</em></label>
+            <input type="date" id="entValidade" required>
+            <span class="field-error">Informe a validade</span>
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Nº NF do Fornecedor</label>
-          <input type="text" class="form-input" id="entNF" placeholder="Ex: NF-000123">
+        <div class="field-row">
+          <div class="field">
+            <label>Fornecedor</label>
+            <input type="text" id="entFornecedor" placeholder="Nome do fornecedor">
+          </div>
+          <div class="field">
+            <label>NF do fornecedor</label>
+            <input type="text" id="entNF" placeholder="Ex.: NF-100234">
+          </div>
         </div>
-        <button type="submit" class="btn-primary full">
-          <i class="ti ti-truck-delivery"></i> Registrar Entrada
+        <button type="submit" class="btn btn-primary btn-rounded btn-block">
+          <i data-lucide="download"></i> Registrar entrada
         </button>
       </form>
     </div>
   </div>
 
-  <!-- EMITIR NF -->
-  <div class="form-overlay" id="nfModal">
-    <div class="form-modal">
-      <div class="form-close" data-close="nfModal"><i class="ti ti-x"></i></div>
-      <h3><i class="ti ti-receipt-2"></i> Emitir Nota Fiscal</h3>
-      <form id="formNF" novalidate>
-        <div class="form-group">
-          <label class="form-label">Venda Referência *</label>
-          <select class="form-input" id="nfVenda" required>
-            <option value="">Selecione a venda</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Tipo de NF</label>
-          <select class="form-input" id="nfTipo">
-            <option>NFC-e (Consumidor Final)</option>
-            <option>NF-e (Pessoa Jurídica)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">CFOP</label>
-          <select class="form-input" id="nfCfop">
-            <option>5.102 — Venda dentro do ES</option>
-            <option>6.102 — Venda fora do ES</option>
-          </select>
-        </div>
-        <button type="submit" class="btn-primary full">
-          <i class="ti ti-receipt-2"></i> Emitir Nota Fiscal
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <!-- CONFIRM AÇÃO -->
-  <div class="form-overlay" id="confirmModal">
-    <div class="form-modal" style="max-width: 400px; text-align: center;">
-      <div class="form-close" data-close="confirmModal"><i class="ti ti-x"></i></div>
-      <h3 id="confirmTitle" style="margin-bottom: 10px; font-size: 20px;"><i class="ti ti-alert-triangle" style="color: var(--status-red); margin-right: 8px;"></i>Confirmar</h3>
-      <p id="confirmMessage" style="margin-bottom: 24px; color: var(--text-mid); font-size: 14px;"></p>
-      <div style="display: flex; gap: 12px; justify-content: center;">
-        <button type="button" class="qa-btn" id="btnConfirmCancel" style="flex: 1; justify-content: center;">Cancelar</button>
-        <button type="button" class="btn-primary" id="btnConfirmOk" style="flex: 1; justify-content: center;">Confirmar</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TOAST -->
+  <!-- TOASTS -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- OVERLAY SIDEBAR MOBILE -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
+  <script src="data.js"></script>
+  <script src="ai.js"></script>
   <script src="app.js"></script>
+
+  <!-- Lucide icons: render once + re-render após updates dinâmicos.
+       O observer se desconecta enquanto desenha para não disparar a si mesmo. -->
+  <script>
+    (function () {
+      if (!window.lucide) return;
+      let raf;
+      const obs = new MutationObserver(schedule);
+      function schedule() { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }
+      function draw() {
+        obs.disconnect();
+        window.lucide.createIcons();
+        obs.observe(document.body, { childList: true, subtree: true });
+      }
+      draw();
+    })();
+  </script>
 </body>
 </html>

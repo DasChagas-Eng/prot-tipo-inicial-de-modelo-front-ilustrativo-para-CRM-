@@ -1,0 +1,15 @@
+# Skills e agentes — não subir
+.agents/
+skills-lock.json
+node_modules/
+
+# Backups locais
+_backup-v1/
+
+# Claude Code / sistema
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
