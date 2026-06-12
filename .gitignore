@@ -6,8 +6,13 @@ node_modules/
 # Backups locais
 _backup-v1/
 
+# Landing (fonte) — artefatos de build e deps
+landing/node_modules/
+landing/dist/
+
 # Claude Code / sistema
 .claude/
+.mcp.json
 
 # OS
 .DS_Store

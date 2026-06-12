@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VB Cosméticos — Sistema de Vendas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="assets/logo-vb.svg" class="logo-mark" alt="VB Cosméticos" draggable="false">
+      <div class="logo-text">
+        <strong>VB Cosméticos</strong>
+        <span>Perfumaria &amp; Beleza</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Principal</div>
+      <a class="nav-item active" data-page="dashboard">
+        <i data-lucide="layout-grid"></i><span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item" data-page="pdv">
+        <i data-lucide="shopping-cart"></i><span class="nav-label">PDV / Nova venda</span>
+      </a>
+
+      <div class="nav-section">Cadastros</div>
+      <a class="nav-item" data-page="produtos">
+        <i data-lucide="package"></i><span class="nav-label">Produtos</span>
+      </a>
+      <a class="nav-item" data-page="clientes">
+        <i data-lucide="users"></i><span class="nav-label">Clientes</span>
+      </a>
+
+      <div class="nav-section">Estoque</div>
+      <a class="nav-item" data-page="entradas">
+        <i data-lucide="download"></i><span class="nav-label">Entrada de produtos</span>
+      </a>
+      <a class="nav-item" data-page="validade">
+        <i data-lucide="clock"></i><span class="nav-label">Controle de validade</span>
+        <span class="nav-badge" id="badgeValidade">5</span>
+      </a>
+
+      <div class="nav-section">Fiscal</div>
+      <a class="nav-item" data-page="notas">
+        <i data-lucide="file-text"></i><span class="nav-label">Notas (NFC-e)</span>
+      </a>
+
+      <div class="nav-divider"></div>
+      <a class="nav-item" data-page="configuracoes">
+        <i data-lucide="settings-2"></i><span class="nav-label">Configurações</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">PV</div>
+        <div class="user-info">
+          <strong>Priscilla Venturin</strong>
+          <span>Proprietária</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ═══════════════════════════════
+       MAIN
+  ═══════════════════════════════ -->
+  <main class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburgerBtn" aria-label="Abrir menu"><i data-lucide="menu"></i></button>
+      <div class="breadcrumb">
+        <span class="breadcrumb-section" id="crumbSection">VB Cosméticos</span>
+        <span class="breadcrumb-page" id="crumbPage">Dashboard</span>
+      </div>
+
+      <div class="topbar-right">
+        <div class="search-wrap">
+          <i data-lucide="search"></i>
+          <input type="text" id="searchInput" placeholder="Buscar produto, cliente ou venda..." autocomplete="off">
+          <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <button class="icon-btn" id="notifBtn" aria-label="Notificações">
+          <i data-lucide="bell"></i>
+          <span class="notif-dot" id="notifDot"></span>
+        </button>
+
+        <button class="btn btn-primary btn-pill" id="novaVendaBtn">
+          <i data-lucide="plus"></i> Nova venda
+        </button>
+      </div>
+    </header>
+
+    <!-- Painel de notificações -->
+    <div class="notif-panel" id="notifPanel">
+      <div class="notif-header">
+        <strong>Notificações</strong>
+        <button class="link-btn" id="clearNotifsBtn">Limpar</button>
+      </div>
+      <div class="notif-list" id="notifList"></div>
+    </div>
+
+    <div class="content" id="pageContent"><!-- páginas injetadas via JS --></div>
+  </main>
+
+  <!-- ═══════════════════════════════
+       ASSISTENTE IA — FAB + DRAWER
+  ═══════════════════════════════ -->
+  <button class="ai-fab" id="aiFab" aria-label="Abrir assistente IA">
+    <i data-lucide="sparkles"></i>
+  </button>
+
+  <aside class="ai-drawer" id="aiDrawer">
+    <div class="ai-drawer-header">
+      <div class="ai-drawer-title">
+        <div class="ai-orb"><i data-lucide="sparkles"></i></div>
+        <div>
+          <strong>Assistente VB</strong>
+          <span>Pergunte em linguagem natural · beta</span>
+        </div>
+      </div>
+      <button class="icon-btn" id="aiCloseBtn" aria-label="Fechar assistente"><i data-lucide="x"></i></button>
+    </div>
+
+    <div class="ai-messages" id="aiMessages"></div>
+
+    <div class="ai-chips" id="aiChips"></div>
+
+    <form class="ai-inputbar" id="aiForm" autocomplete="off">
+      <input type="text" id="aiInput" placeholder="Ex.: clientes que não compram há 90 dias…">
+      <button type="submit" class="ai-send" aria-label="Enviar"><i data-lucide="arrow-up"></i></button>
+    </form>
+  </aside>
+  <div class="ai-overlay" id="aiOverlay"></div>
+
+  <!-- ═══════════════════════════════
+       MODAIS
+  ═══════════════════════════════ -->
+
+  <!-- NOVO / EDITAR PRODUTO -->
+  <div class="modal-overlay" id="produtoModal">
+    <div class="modal">
+      <button class="modal-close" data-close="produtoModal" aria-label="Fechar"><i data-lucide="x"></i></button>
+      <h3 id="produtoModalTitle"><i data-lucide="package"></i> Cadastrar produto</h3>
+      <form id="formProduto" novalidate>
+        <div class="field">
+          <label>Nome do produto <em>*</em></label>
+          <input type="text" id="prodNome" placeholder="Ex.: Perfume Fem. Blossom 100ml" required>
+          <span class="field-error">Informe o nome do produto</span>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Categoria <em>*</em></label>
+            <select id="prodCategoria" required>
+              <option value="">Selecione</option>
+              <option>Perfumaria</option>
+              <option>Maquiagem</option>
+              <option>Skincare</option>
+              <option>Cabelos &amp; outros</option>
+            </select>
+            <span class="field-error">Selecione a categoria</span>
+          </div>
+          <div class="field">
+            <label>Preço de venda (R$) <em>*</em></label>
+            <input type="number" id="prodPreco" placeholder="0,00" min="0.01" step="0.01" required>
+            <span class="field-error">Informe o preço</span>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Estoque inicial <em>*</em></label>
+            <input type="number" id="prodEstoque" placeholder="0" min="0" required>
+            <span class="field-error">Informe a quantidade</span>
+          </div>
+          <div class="field">
+            <label>Estoque mínimo</label>
+            <input type="number" id="prodEstoqueMin" placeholder="5" min="0">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Lote</label>
+            <input type="text" id="prodLote" placeholder="Ex.: L2606">
+          </div>
+          <div class="field">
+            <label>Validade <em>*</em></label>
+            <input type="date" id="prodValidade" required>
+            <span class="field-error">Informe a validade</span>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-rounded btn-block" id="produtoModalSubmit">
+          <i data-lucide="plus"></i> Cadastrar produto
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- NOVO CLIENTE -->
+  <div class="modal-overlay" id="clienteModal">
+    <div class="modal">
+      <button class="modal-close" data-close="clienteModal" aria-label="Fechar"><i data-lucide="x"></i></button>
+      <h3><i data-lucide="user-plus"></i> Novo cliente</h3>
+      <form id="formCliente" novalidate>
+        <div class="field">
+          <label>Nome completo <em>*</em></label>
+          <input type="text" id="cliNome" placeholder="Nome do cliente" required>
+          <span class="field-error">Informe o nome</span>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Telefone / WhatsApp <em>*</em></label>
+            <input type="tel" id="cliTel" placeholder="(27) 99000-0000" required>
+            <span class="field-error">Informe o telefone</span>
+          </div>
+          <div class="field">
+            <label>CPF</label>
+            <input type="text" id="cliCpf" placeholder="000.000.000-00" maxlength="14">
+          </div>
+        </div>
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" id="cliEmail" placeholder="cliente@email.com">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Data de nascimento</label>
+            <input type="date" id="cliNascimento">
+          </div>
+          <div class="field">
+            <label>Cidade</label>
+            <select id="cliCidade">
+              <option>Vila Velha</option>
+              <option>Vitória</option>
+              <option>Serra</option>
+              <option>Cariacica</option>
+              <option>Guarapari</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-rounded btn-block">
+          <i data-lucide="user-plus"></i> Cadastrar cliente
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ENTRADA DE PRODUTOS -->
+  <div class="modal-overlay" id="entradaModal">
+    <div class="modal">
+      <button class="modal-close" data-close="entradaModal" aria-label="Fechar"><i data-lucide="x"></i></button>
+      <h3><i data-lucide="download"></i> Registrar entrada</h3>
+      <form id="formEntrada" novalidate>
+        <div class="field">
+          <label>Produto <em>*</em></label>
+          <select id="entProduto" required>
+            <option value="">Selecione o produto</option>
+          </select>
+          <span class="field-error">Selecione o produto</span>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Quantidade recebida <em>*</em></label>
+            <input type="number" id="entQtd" placeholder="0" min="1" required>
+            <span class="field-error">Informe a quantidade</span>
+          </div>
+          <div class="field">
+            <label>Custo unitário (R$)</label>
+            <input type="number" id="entCusto" placeholder="0,00" min="0" step="0.01">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Lote</label>
+            <input type="text" id="entLote" placeholder="Ex.: L2606">
+          </div>
+          <div class="field">
+            <label>Validade do lote <em>*</em></label>
+            <input type="date" id="entValidade" required>
+            <span class="field-error">Informe a validade</span>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Fornecedor</label>
+            <input type="text" id="entFornecedor" placeholder="Nome do fornecedor">
+          </div>
+          <div class="field">
+            <label>NF do fornecedor</label>
+            <input type="text" id="entNF" placeholder="Ex.: NF-100234">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-rounded btn-block">
+          <i data-lucide="download"></i> Registrar entrada
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOASTS -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="data.js"></script>
+  <script src="ai.js"></script>
+  <script src="app.js"></script>
+
+  <!-- Lucide icons: render once + re-render após updates dinâmicos.
+       O observer se desconecta enquanto desenha para não disparar a si mesmo. -->
+  <script>
+    (function () {
+      if (!window.lucide) return;
+      let raf;
+      const obs = new MutationObserver(schedule);
+      function schedule() { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); }
+      function draw() {
+        obs.disconnect();
+        window.lucide.createIcons();
+        obs.observe(document.body, { childList: true, subtree: true });
+      }
+      draw();
+    })();
+  </script>
+</body>
+</html>
